@@ -61,6 +61,17 @@ qemu-system-aarch64 -M virt -cpu max -smp 4 -m 4096 \
 AAVMF firmware is in the `qemu-efi-aarch64` package. Use `-accel kvm`
 and `-cpu host` on arm64 hosts with KVM.
 
+## Troubleshooting
+
+**Reaches the GRUB menu, but selecting Install blanks the screen to a
+flashing cursor and hangs.** The rebuild corrupted a boot-critical file.
+`build.sh` passes the kernel through untouched and verifies both the
+kernel and the patched initrds after writing the ISO; if your host's
+xorriso is corrupting files it now aborts with an error instead of
+producing this ISO. If you hit that error, update xorriso (Debian's
+`xorriso` or a current Homebrew build) or run the build on another host —
+the script itself is correct, the packaging tool on that machine is not.
+
 ## How it works
 
 `build.sh` appends a cpio overlay (the preseed file plus the `payload/`

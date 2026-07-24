@@ -40,22 +40,53 @@ cp -r "$HERE/payload/minty" "$overlay/minty"
 # --format (not -H/--quiet) works in both GNU cpio and macOS BSD cpio.
 ( cd "$overlay" && find . | cpio -o --format newc | gzip -9 ) > "$WORK/overlay.cpio.gz"
 
-# Both the text and gtk installer initrds live under /install.a64; the
-# kernel accepts concatenated initramfs archives, later entries win.
-xorriso -osirrox on -indev "$ISO" -extract /install.a64 "$WORK/install.a64" 2>/dev/null
-chmod -R u+w "$WORK/install.a64"
-found=0
-while IFS= read -r initrd; do
-  cat "$WORK/overlay.cpio.gz" >> "$initrd"
-  echo "injected overlay into ${initrd#"$WORK"/}"
-  found=1
-done < <(find "$WORK/install.a64" -name initrd.gz)
-[ "$found" -eq 1 ] || { echo "no initrd.gz under /install.a64 — not a Debian arm64 installer ISO?" >&2; exit 1; }
+# The Debian arm64 installer boots one of two initrds (text / graphical),
+# both referenced by /boot/grub/grub.cfg. Touch ONLY these files: extract
+# each, append the overlay (the kernel reads concatenated initramfs
+# archives, later entries win), and map it back individually. vmlinuz and
+# every other file pass through untouched from the source ISO, so no
+# xorriso version can corrupt the kernel via a round trip. DANGER: keep
+# this list in step with grub.cfg's initrd paths.
+INITRDS=(/install.a64/initrd.gz /install.a64/gtk/initrd.gz)
+map_args=()
+for iso_path in "${INITRDS[@]}"; do
+  local_copy="$WORK/$(echo "$iso_path" | tr / _)"
+  xorriso -osirrox on -indev "$ISO" -extract "$iso_path" "$local_copy" 2>/dev/null
+  [ -s "$local_copy" ] || { echo "missing $iso_path — not a Debian arm64 installer ISO?" >&2; exit 1; }
+  chmod u+w "$local_copy"
+  cat "$WORK/overlay.cpio.gz" >> "$local_copy"
+  echo "injected overlay into $iso_path"
+  map_args+=(-map "$local_copy" "$iso_path")
+done
 
 # Replay mode reproduces the source ISO's EFI boot structure unchanged.
 xorriso -indev "$ISO" -outdev "$OUT" \
         -boot_image any replay \
-        -map "$WORK/install.a64" /install.a64
+        "${map_args[@]}"
+
+# Verify the rebuild preserved the boot-critical files. A broken xorriso
+# can silently corrupt files while still producing a bootable-looking
+# ISO — the symptom is reaching GRUB but hanging at kernel handoff (blank
+# screen, flashing cursor). Refuse to emit such an image.
+corrupt() {
+  echo "ERROR: $1" >&2
+  echo "       This host's xorriso ($(xorriso -version 2>/dev/null | head -1)) is corrupting files during rebuild." >&2
+  echo "       The ISO would reach GRUB but hang at kernel handoff. Not shipping it." >&2
+  rm -f "$OUT"
+  exit 1
+}
+
+# The kernel is passed through untouched, so it must be byte-identical.
+xorriso -osirrox on -indev "$ISO" -extract /install.a64/vmlinuz "$WORK/kern_in"  2>/dev/null
+xorriso -osirrox on -indev "$OUT" -extract /install.a64/vmlinuz "$WORK/kern_out" 2>/dev/null
+cmp -s "$WORK/kern_in" "$WORK/kern_out" || corrupt "kernel changed during rebuild"
+
+# The patched initrds must be intact gzip (all concatenated streams).
+for iso_path in "${INITRDS[@]}"; do
+  chk="$WORK/verify$(echo "$iso_path" | tr / _)"
+  xorriso -osirrox on -indev "$OUT" -extract "$iso_path" "$chk" 2>/dev/null
+  gzip -t < "$chk" 2>/dev/null || corrupt "$iso_path is corrupt in the output ISO"
+done
 
 echo
-echo "wrote $OUT (preseed: $(basename "$PRESEED"))"
+echo "wrote $OUT (preseed: $(basename "$PRESEED"); kernel + initrds verified intact)"
