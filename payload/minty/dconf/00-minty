@@ -1,0 +1,16 @@
+# System-wide desktop defaults; users can override in their session.
+# Theme names come from Debian's mint-themes and mint-y-icons packages.
+
+[org/cinnamon/theme]
+name='Mint-Y-Dark-Aqua'
+
+[org/cinnamon/desktop/interface]
+gtk-theme='Mint-Y-Dark-Aqua'
+icon-theme='Mint-Y'
+
+[org/cinnamon/desktop/wm/preferences]
+theme='Mint-Y-Dark-Aqua'
+
+[org/gnome/desktop/interface]
+gtk-theme='Mint-Y-Dark-Aqua'
+icon-theme='Mint-Y'
