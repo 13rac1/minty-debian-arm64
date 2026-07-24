@@ -3,6 +3,9 @@
 # preseed's late_command). Installs the Mint-origin package list from
 # the Debian archive, then applies desktop defaults. Safe to rerun:
 # sudo bash /opt/minty/setup.sh
+#
+# Copyright (C) 2026 Bradley Erickson
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 LOG=/var/log/minty-setup.log

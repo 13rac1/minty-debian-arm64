@@ -2,6 +2,9 @@
 # build.sh — remaster a stock Debian 13 arm64 installer ISO (netinst or
 # DVD-1) into an unattended installer for a Mint-like Cinnamon desktop.
 # SEE README.md "How it works" for the mechanism and safety notes.
+#
+# Copyright (C) 2026 Bradley Erickson
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
 
 usage() {
@@ -34,7 +37,8 @@ overlay="$WORK/overlay"
 mkdir -p "$overlay"
 cp "$HERE/$PRESEED" "$overlay/preseed.cfg"
 cp -r "$HERE/payload/minty" "$overlay/minty"
-( cd "$overlay" && find . | cpio -o -H newc --quiet | gzip -9 ) > "$WORK/overlay.cpio.gz"
+# --format (not -H/--quiet) works in both GNU cpio and macOS BSD cpio.
+( cd "$overlay" && find . | cpio -o --format newc | gzip -9 ) > "$WORK/overlay.cpio.gz"
 
 # Both the text and gtk installer initrds live under /install.a64; the
 # kernel accepts concatenated initramfs archives, later entries win.

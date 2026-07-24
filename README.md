@@ -72,8 +72,14 @@ the payload into the installed system and runs `setup.sh`, which
 installs the package list and applies the desktop defaults (dconf
 system database, slick-greeter as the lightdm greeter, Mint-Y theming).
 
-Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux host,
-any architecture (only the target ISO is arm64).
+Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux or
+macOS host, any architecture (only the target ISO is arm64):
+
+- Debian/Ubuntu: `sudo apt install xorriso` (cpio and gzip are standard)
+- macOS: `brew install xorriso` (BSD cpio and gzip are built in)
+
+On an Apple Silicon Mac the result can also be tested at native speed:
+UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
 
 ## Layout
 
@@ -95,3 +101,7 @@ Full install runs are tested in QEMU; bare-metal reports welcome.
 "Minty" describes the flavor; this project is not Linux Mint and ships
 none of its branding. The mint-themes and mint-y-icons packages are
 redistributed by Debian under their upstream (GPL) licenses.
+
+## License
+
+GPLv3 — see LICENSE. Copyright (C) 2026 Bradley Erickson.
