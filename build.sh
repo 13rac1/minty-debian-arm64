@@ -31,11 +31,13 @@ done
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
-# d-i auto-loads /preseed.cfg from the initramfs root; /minty is copied
-# into the target by the preseed's late_command.
+# The initramfs overlay carries only the payload tree; the preseed lives
+# on the ISO filesystem and is loaded via grub.cfg's file= parameter.
+# Placing preseed.cfg in the initramfs root triggers d-i's early preseed
+# loader, which on QEMU ARM64 runs before framebuffer init — the result
+# is a working GRUB menu followed by a blank display with no installer.
 overlay="$WORK/overlay"
 mkdir -p "$overlay"
-cp "$HERE/$PRESEED" "$overlay/preseed.cfg"
 cp -r "$HERE/payload/minty" "$overlay/minty"
 # --format (not -H/--quiet) works in both GNU cpio and macOS BSD cpio.
 ( cd "$overlay" && find . | cpio -o --format newc | gzip -9 ) > "$WORK/overlay.cpio.gz"
@@ -59,10 +61,20 @@ for iso_path in "${INITRDS[@]}"; do
   map_args+=(-map "$local_copy" "$iso_path")
 done
 
+# Patch grub.cfg: tell d-i to load the preseed from the CD-ROM mount
+# point instead of auto-detecting it in the initramfs. The CD-ROM is
+# mounted after hw-detect, so the framebuffer is already initialised.
+xorriso -osirrox on -indev "$ISO" -extract /boot/grub/grub.cfg "$WORK/grub.cfg" 2>/dev/null
+[ -s "$WORK/grub.cfg" ] || { echo "missing /boot/grub/grub.cfg — not a Debian arm64 installer ISO?" >&2; exit 1; }
+sed 's|/install.a64/vmlinuz |/install.a64/vmlinuz file=/cdrom/preseed.cfg |g' \
+  "$WORK/grub.cfg" > "$WORK/grub-patched.cfg"
+
 # Replay mode reproduces the source ISO's EFI boot structure unchanged.
 xorriso -indev "$ISO" -outdev "$OUT" \
         -boot_image any replay \
-        "${map_args[@]}"
+        "${map_args[@]}" \
+        -map "$WORK/grub-patched.cfg" /boot/grub/grub.cfg \
+        -map "$HERE/$PRESEED" /preseed.cfg
 
 # Verify the rebuild preserved the boot-critical files. A broken xorriso
 # can silently corrupt files while still producing a bootable-looking
