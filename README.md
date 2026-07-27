@@ -61,27 +61,20 @@ qemu-system-aarch64 -M virt -cpu max -smp 4 -m 4096 \
 AAVMF firmware is in the `qemu-efi-aarch64` package. Use `-accel kvm`
 and `-cpu host` on arm64 hosts with KVM.
 
-## Troubleshooting
-
-**Reaches the GRUB menu, but selecting Install blanks the screen to a
-flashing cursor and hangs.** The rebuild corrupted a boot-critical file.
-`build.sh` passes the kernel through untouched and verifies both the
-kernel and the patched initrds after writing the ISO; if your host's
-xorriso is corrupting files it now aborts with an error instead of
-producing this ISO. If you hit that error, update xorriso (Debian's
-`xorriso` or a current Homebrew build) or run the build on another host —
-the script itself is correct, the packaging tool on that machine is not.
-
 ## How it works
 
-`build.sh` appends a cpio overlay (the preseed file plus the `payload/`
-tree) to both installer initrds inside the ISO, then repacks with
-xorriso in boot-image replay mode so the EFI boot structure is
-preserved byte-for-byte. The Debian installer auto-loads a
-`preseed.cfg` found at the initramfs root; its `late_command` copies
-the payload into the installed system and runs `setup.sh`, which
-installs the package list and applies the desktop defaults (dconf
-system database, slick-greeter as the lightdm greeter, Mint-Y theming).
+`build.sh` appends a cpio overlay (the `payload/` tree) to both
+installer initrds inside the ISO, places the preseed file on the ISO
+filesystem, patches `grub.cfg` to pass `file=/cdrom/preseed.cfg` to
+the kernel, and repacks with xorriso in boot-image replay mode so the
+EFI boot structure is preserved byte-for-byte. The preseed is loaded
+from the CD-ROM mount point after hardware detection rather than
+auto-loaded from the initramfs root — the early initramfs path runs
+before framebuffer init on QEMU ARM64, blanking the display. The
+preseed's `late_command` copies the payload into the installed system
+and runs `setup.sh`, which installs the package list and applies the
+desktop defaults (dconf system database, slick-greeter as the lightdm
+greeter, Mint-Y theming).
 
 Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux or
 macOS host, any architecture (only the target ISO is arm64):
