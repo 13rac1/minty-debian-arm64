@@ -1,16 +1,27 @@
-# System-wide desktop defaults; users can override in their session.
-# Theme names come from Debian's mint-themes and mint-y-icons packages.
+# System-wide MATE desktop defaults (the "DarkShiny" look); users can
+# override per session. Every component ships in Debian, so nothing is
+# baked into the image: Adwaita-dark from gnome-themes-extra-data, the
+# Shiny Marco theme and the mate cursor from mate-themes, mate icons from
+# mate-icon-theme.
+#
+# DANGER: the dconf paths differ from the gsettings schema ids — group
+# headers are the paths. org.mate.interface lives at .../desktop/interface;
+# org.mate.Marco.general lives at .../marco/general (lowercase). A wrong
+# header is silently ignored.
 
-[org/cinnamon/theme]
-name='Mint-Y-Dark-Aqua'
+[org/mate/desktop/interface]
+gtk-theme='Adwaita-dark'
+icon-theme='mate'
 
-[org/cinnamon/desktop/interface]
-gtk-theme='Mint-Y-Dark-Aqua'
-icon-theme='Mint-Y'
+[org/mate/marco/general]
+theme='Shiny'
 
-[org/cinnamon/desktop/wm/preferences]
-theme='Mint-Y-Dark-Aqua'
+[org/mate/desktop/peripherals/mouse]
+cursor-theme='mate'
+cursor-size=24
 
+# Fallback for GTK/GNOME apps that read the gnome schema (portals, GTK4).
 [org/gnome/desktop/interface]
-gtk-theme='Mint-Y-Dark-Aqua'
-icon-theme='Mint-Y'
+gtk-theme='Adwaita-dark'
+icon-theme='mate'
+color-scheme='prefer-dark'

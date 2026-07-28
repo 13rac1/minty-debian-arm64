@@ -1,4 +1,6 @@
-mint-y-icons
+mate-themes
+gnome-themes-extra-data
+mate-icon-theme
 slick-greeter
 timeshift
 mintstick

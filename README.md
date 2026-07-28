@@ -1,9 +1,9 @@
 # Minty Debian arm64
 
 Turn a stock Debian 13 arm64 installer ISO into an unattended installer
-for a Mint-like Cinnamon desktop. Every package comes from official
-Debian mirrors — no third-party repositories, no rebuilt packages, no
-Linux Mint branding shipped by this project.
+for a Mint-like MATE desktop. Every package comes from official Debian
+mirrors — no third-party repositories, no rebuilt packages, no Linux
+Mint branding shipped by this project.
 
 ## Workflow
 
@@ -13,10 +13,10 @@ Linux Mint branding shipped by this project.
 3. `./build.sh debian-13.6.0-arm64-DVD-1.iso`
 
 Output: `minty-debian-arm64.iso` — boot it on any arm64 UEFI machine or
-VM and it installs Debian 13 with Cinnamon plus the Mint-origin
-applications and themes that Debian itself packages: mint-themes,
-mint-y-icons, slick-greeter, xed, xreader, xviewer, pix, timeshift,
-warpinator, mintstick, sticky, hypnotix.
+VM and it installs Debian 13 with MATE, themed dark (the "DarkShiny"
+look: Adwaita-dark GTK, the Shiny Marco window theme, mate icons), plus
+the Mint-origin applications Debian itself packages: slick-greeter,
+timeshift, mintstick.
 
 This is an installer image, not a live session — Debian publishes no
 arm64 live desktop images, so there is no try-before-install.
@@ -39,10 +39,10 @@ wipe. Change the password on first login.
 
 ## Network requirements
 
-- DVD-1 input: the Cinnamon desktop installs from the disc; the
-  Mint-origin packages are not on DVD-1 and install from the network
-  mirror. With no network the result is a plain Debian Cinnamon system
-  — finish later with `sudo bash /opt/minty/setup.sh`.
+- DVD-1 input: the MATE desktop installs from the disc; the Mint-origin
+  packages are not on DVD-1 and install from the network mirror. With no
+  network the result is a plain Debian MATE system — finish later with
+  `sudo bash /opt/minty/setup.sh`.
 - netinst input: network required for the whole install.
 
 ## Testing in QEMU
@@ -70,20 +70,19 @@ the kernel, and repacks with xorriso in boot-image replay mode so the
 EFI boot structure is preserved byte-for-byte. The preseed is loaded
 from the CD-ROM mount point after hardware detection rather than
 auto-loaded from the initramfs root — the early initramfs path runs
-before framebuffer init on QEMU ARM64, blanking the display. `build.sh`
-also downloads the Mint-Y theme `.deb`s (not in Debian) and bakes them
-into the payload. The preseed's `late_command` copies the payload into
-the installed system and runs `setup.sh`, which installs the package
-list and the baked theme `.deb`s, removes the unused `mate-themes`, and
-applies the desktop defaults (dconf system database, slick-greeter as
-the lightdm greeter, Mint-Y theming).
+before framebuffer init on QEMU ARM64, blanking the display. The
+preseed's `late_command` copies the payload into the installed system
+and runs `setup.sh`, which installs the package list and applies the
+desktop defaults (dconf system database, slick-greeter as the lightdm
+greeter, the DarkShiny theme selection). Every theme component ships in
+Debian — Adwaita-dark, the Shiny Marco theme, mate icons — so `build.sh`
+downloads nothing; it only repacks the ISO.
 
-Build dependencies: `xorriso`, `cpio`, `gzip`, and `curl` or `wget`
-(build.sh fetches the theme `.deb`s). Runs on any Linux or macOS host,
-any architecture (only the target ISO is arm64):
+Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux or
+macOS host, any architecture (only the target ISO is arm64):
 
-- Debian/Ubuntu: `sudo apt install xorriso` (cpio, gzip, wget are standard)
-- macOS: `brew install xorriso` (curl, cpio, gzip are built in)
+- Debian/Ubuntu: `sudo apt install xorriso` (cpio and gzip are standard)
+- macOS: `brew install xorriso` (cpio and gzip are built in)
 
 On an Apple Silicon Mac the result can also be tested at native speed:
 UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
@@ -94,7 +93,7 @@ UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
 - `preseed/preseed.cfg` — semi-attended answers (default)
 - `preseed/preseed-auto.cfg` — fully unattended answers (`--auto`)
 - `payload/minty/setup.sh` — runs in the target at the end of install
-- `payload/minty/packages.txt` — the Mint-origin package list
+- `payload/minty/packages.txt` — the package list (MATE theming + Mint-origin apps)
 - `payload/minty/dconf/` — desktop defaults
 - `payload/minty/lightdm/` — greeter configuration
 
@@ -106,8 +105,9 @@ Full install runs are tested in QEMU; bare-metal reports welcome.
 ## Naming and trademarks
 
 "Minty" describes the flavor; this project is not Linux Mint and ships
-none of its branding. The mint-themes and mint-y-icons packages are
-redistributed by Debian under their upstream (GPL) licenses.
+none of its branding. The Mint-origin applications it installs
+(slick-greeter, timeshift, mintstick) are redistributed by Debian under
+their upstream (GPL) licenses.
 
 ## License
 
