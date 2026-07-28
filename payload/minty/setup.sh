@@ -12,16 +12,25 @@ LOG=/var/log/minty-setup.log
 exec > >(tee -a "$LOG") 2>&1
 
 echo "minty: installing packages from the Debian archive"
-packages_ok=0
-if apt-get update; then
-  if xargs -a "$HERE/packages.txt" apt-get install -y; then
-    packages_ok=1
-  fi
+if ! apt-get update; then
+  echo "minty: FATAL apt-get update failed (no network mirror?); aborting." >&2
+  exit 1
 fi
-if [ "$packages_ok" -ne 1 ]; then
-  echo "minty: WARNING package install failed (no network mirror?)."
-  echo "minty: the system is plain Debian Cinnamon; rerun this script later:"
-  echo "minty:   sudo bash /opt/minty/setup.sh"
+# Install one package at a time: a single missing package aborts a batched
+# apt-get install and takes the installable ones down with it (that is how
+# slick-greeter silently failed to install). Any failure is fatal — a
+# missing package means the image is incomplete, not degraded-but-usable.
+# Collect every failure first so the log names all of them, not just the
+# first.
+missing=()
+while read -r pkg; do
+  case "$pkg" in ''|\#*) continue ;; esac
+  apt-get install -y "$pkg" || missing+=("$pkg")
+done < "$HERE/packages.txt"
+if [ "${#missing[@]}" -ne 0 ]; then
+  echo "minty: FATAL could not install: ${missing[*]}" >&2
+  echo "minty: the image is incomplete; aborting setup." >&2
+  exit 1
 fi
 
 echo "minty: installing the Mint-Y theme"

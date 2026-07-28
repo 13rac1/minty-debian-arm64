@@ -1,13 +1,6 @@
 mint-y-icons
 slick-greeter
-xed
-xreader
-xviewer
-pix
 timeshift
-warpinator
 mintstick
-sticky
-hypnotix
 fonts-ubuntu
 dconf-cli
