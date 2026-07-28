@@ -50,13 +50,25 @@ MINT_DEBS=(
   http://packages.linuxmint.com/pool/main/m/mint-themes/mint-themes_2.4.0_all.deb
   http://packages.linuxmint.com/pool/main/m/mint-x-icons/mint-x-icons_1.7.6_all.deb
 )
-mkdir -p "$overlay/minty/debs"
+# Cache downloads across builds. The pinned filenames are version-stamped,
+# so a cached file is exactly the pinned artifact — bump a pin to refetch.
+# Download to a temp file and mv into place, so an interrupted fetch never
+# leaves a partial .deb in the cache to be reused as if complete.
+cache="$HERE/.cache/debs"
+mkdir -p "$cache" "$overlay/minty/debs"
 for url in "${MINT_DEBS[@]}"; do
-  out="$overlay/minty/debs/$(basename "$url")"
-  case "$DL" in
-    *curl) "$DL" -fsSL -o "$out" "$url" ;;
-    *wget) "$DL" -q -O "$out" "$url" ;;
-  esac || { echo "failed to download $url" >&2; exit 1; }
+  file="$(basename "$url")"
+  if [ ! -s "$cache/$file" ]; then
+    case "$DL" in
+      *curl) "$DL" -fsSL -o "$WORK/$file" "$url" ;;
+      *wget) "$DL" -q -O "$WORK/$file" "$url" ;;
+    esac || { echo "failed to download $url" >&2; exit 1; }
+    mv "$WORK/$file" "$cache/$file"
+    echo "downloaded $file"
+  else
+    echo "cached $file"
+  fi
+  cp "$cache/$file" "$overlay/minty/debs/$file"
 done
 echo "baked Mint-Y theme .debs into the image"
 
