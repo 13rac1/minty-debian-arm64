@@ -1,4 +1,3 @@
-mint-themes
 mint-y-icons
 slick-greeter
 xed

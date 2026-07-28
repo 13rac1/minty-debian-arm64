@@ -24,6 +24,23 @@ if [ "$packages_ok" -ne 1 ]; then
   echo "minty:   sudo bash /opt/minty/setup.sh"
 fi
 
+echo "minty: installing the Mint-Y theme"
+# build.sh bakes the theme .debs into debs/; apt pulls the mint-y-icons
+# dependency from Debian. Offline (no mirror), this fails and Cinnamon
+# keeps its default theme.
+if ! apt-get install -y "$HERE"/debs/*.deb; then
+  echo "minty: WARNING Mint-Y theme not installed (offline?); Cinnamon keeps its"
+  echo "minty: default theme. Rerun this script once online to apply it."
+fi
+
+# mate-themes rides in as a Recommends of cinnamon-desktop-environment.
+# We ship Cinnamon, not MATE; drop it (and its BlackMATE/BlueMenta themes).
+# Recommends means nothing depends on it, so purge does not cascade.
+if dpkg -s mate-themes >/dev/null 2>&1; then
+  echo "minty: removing mate-themes (unused MATE themes)"
+  apt-get purge -y mate-themes
+fi
+
 echo "minty: applying desktop defaults"
 install -d /etc/dconf/profile /etc/dconf/db/local.d
 printf 'user-db:user\nsystem-db:local\n' > /etc/dconf/profile/user

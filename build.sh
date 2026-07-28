@@ -26,6 +26,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 for dep in xorriso cpio gzip; do
   command -v "$dep" >/dev/null || { echo "missing dependency: $dep" >&2; exit 1; }
 done
+DL=$(command -v curl || command -v wget) || { echo "missing dependency: curl or wget" >&2; exit 1; }
 [ -f "$ISO" ] || { echo "no such file: $ISO" >&2; exit 1; }
 
 WORK=$(mktemp -d)
@@ -39,6 +40,26 @@ trap 'rm -rf "$WORK"' EXIT
 overlay="$WORK/overlay"
 mkdir -p "$overlay"
 cp -r "$HERE/payload/minty" "$overlay/minty"
+
+# Bake the Mint-Y theme .debs into the image; setup.sh installs them at
+# install time. mint-themes depends on mint-x-icons and mint-y-icons.
+# mint-themes and mint-x-icons are arch:all GPL data, not in Debian, so
+# we bake them; mint-y-icons is in Debian and comes from the mirror (via
+# packages.txt). Bump these pins when Mint publishes newer builds.
+MINT_DEBS=(
+  http://packages.linuxmint.com/pool/main/m/mint-themes/mint-themes_2.4.0_all.deb
+  http://packages.linuxmint.com/pool/main/m/mint-x-icons/mint-x-icons_1.7.6_all.deb
+)
+mkdir -p "$overlay/minty/debs"
+for url in "${MINT_DEBS[@]}"; do
+  out="$overlay/minty/debs/$(basename "$url")"
+  case "$DL" in
+    *curl) "$DL" -fsSL -o "$out" "$url" ;;
+    *wget) "$DL" -q -O "$out" "$url" ;;
+  esac || { echo "failed to download $url" >&2; exit 1; }
+done
+echo "baked Mint-Y theme .debs into the image"
+
 # --format (not -H/--quiet) works in both GNU cpio and macOS BSD cpio.
 ( cd "$overlay" && find . | cpio -o --format newc | gzip -9 ) > "$WORK/overlay.cpio.gz"
 
@@ -47,7 +68,7 @@ cp -r "$HERE/payload/minty" "$overlay/minty"
 # each, append the overlay (the kernel reads concatenated initramfs
 # archives, later entries win), and map it back individually. vmlinuz and
 # every other file pass through untouched from the source ISO, so no
-# xorriso version can corrupt the kernel via a round trip. DANGER: keep
+# xorriso version can corrupt the kernel via a round trip. SYNC: keep
 # this list in step with grub.cfg's initrd paths.
 INITRDS=(/install.a64/initrd.gz /install.a64/gtk/initrd.gz)
 map_args=()

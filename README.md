@@ -70,17 +70,20 @@ the kernel, and repacks with xorriso in boot-image replay mode so the
 EFI boot structure is preserved byte-for-byte. The preseed is loaded
 from the CD-ROM mount point after hardware detection rather than
 auto-loaded from the initramfs root — the early initramfs path runs
-before framebuffer init on QEMU ARM64, blanking the display. The
-preseed's `late_command` copies the payload into the installed system
-and runs `setup.sh`, which installs the package list and applies the
-desktop defaults (dconf system database, slick-greeter as the lightdm
-greeter, Mint-Y theming).
+before framebuffer init on QEMU ARM64, blanking the display. `build.sh`
+also downloads the Mint-Y theme `.deb`s (not in Debian) and bakes them
+into the payload. The preseed's `late_command` copies the payload into
+the installed system and runs `setup.sh`, which installs the package
+list and the baked theme `.deb`s, removes the unused `mate-themes`, and
+applies the desktop defaults (dconf system database, slick-greeter as
+the lightdm greeter, Mint-Y theming).
 
-Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux or
-macOS host, any architecture (only the target ISO is arm64):
+Build dependencies: `xorriso`, `cpio`, `gzip`, and `curl` or `wget`
+(build.sh fetches the theme `.deb`s). Runs on any Linux or macOS host,
+any architecture (only the target ISO is arm64):
 
-- Debian/Ubuntu: `sudo apt install xorriso` (cpio and gzip are standard)
-- macOS: `brew install xorriso` (BSD cpio and gzip are built in)
+- Debian/Ubuntu: `sudo apt install xorriso` (cpio, gzip, wget are standard)
+- macOS: `brew install xorriso` (curl, cpio, gzip are built in)
 
 On an Apple Silicon Mac the result can also be tested at native speed:
 UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
