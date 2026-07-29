@@ -2,7 +2,6 @@ mint-y-icons
 bibata-cursor-theme
 slick-greeter
 timeshift
-mintstick
 mate-menu
 dconf-cli
 spice-vdagent

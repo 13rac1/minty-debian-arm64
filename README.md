@@ -22,7 +22,7 @@ to `build.sh`) — boot it on any arm64 UEFI machine or
 VM and it installs Debian 13 with MATE, themed Mint-Y-Dark (green
 accent): the Mint-Y-Dark GTK theme, the adaptive Mint-Y Marco window
 borders, Mint-Y icons, and the Bibata cursor. Plus the Mint-origin
-applications Debian itself packages (slick-greeter, timeshift, mintstick)
+applications Debian itself packages (slick-greeter, timeshift)
 and the SPICE/QEMU guest agents for running under UTM or QEMU
 (spice-vdagent for clipboard and dynamic resolution, spice-webdavd for
 file sharing, qemu-guest-agent for host-driven shutdown). A UTM shared
@@ -121,8 +121,8 @@ Full install runs are tested in QEMU; bare-metal reports welcome.
 "Minty" describes the flavor; this project is not Linux Mint and ships
 none of its logos or artwork-branding. It does redistribute Mint's GPL
 theme data — `mint-themes` and `mint-x-icons` from the Linux Mint pool,
-plus `mint-y-icons` and the apps (slick-greeter, timeshift, mintstick)
-that Debian itself packages — all under their upstream GPL licenses.
+plus `mint-y-icons` and the apps (slick-greeter, timeshift) that Debian
+itself packages — all under their upstream GPL licenses.
 
 ## License
 
