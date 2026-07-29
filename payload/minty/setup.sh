@@ -45,16 +45,16 @@ fi
 echo "minty: enabling weekly fstrim"
 systemctl enable fstrim.timer 2>/dev/null || echo "minty: WARNING could not enable fstrim.timer"
 
-echo "minty: installing the DarkShiny theme"
-# DarkShiny is a complete theme: a metatheme (index.theme, so it is a
-# selectable/active preset in MATE Appearance) plus its own GTK CSS —
-# built-in Adwaita dark with the missing entry caret-color restored. Its
-# GTK2 rc just includes Adwaita-dark's, which must therefore be installed
-# (mate-themes/gnome-themes-extra-data are in packages.txt).
-install -d /usr/share/themes/DarkShiny/gtk-3.0 /usr/share/themes/DarkShiny/gtk-2.0
-install -m 0644 "$HERE/themes/DarkShiny/index.theme"     /usr/share/themes/DarkShiny/index.theme
-install -m 0644 "$HERE/themes/DarkShiny/gtk-3.0/gtk.css" /usr/share/themes/DarkShiny/gtk-3.0/gtk.css
-install -m 0644 "$HERE/themes/DarkShiny/gtk-2.0/gtkrc"   /usr/share/themes/DarkShiny/gtk-2.0/gtkrc
+echo "minty: installing the Mint-Y theme"
+# build.sh bakes mint-themes + mint-x-icons (Linux Mint pool, arch:all, not
+# in Debian) into debs/; the mint-y-icons dependency comes from Debian (in
+# packages.txt, installed above). mint-themes ships the GTK color variants
+# and the adaptive base Mint-Y metacity (window-border) theme. Offline this
+# fails and MATE keeps its default theme.
+if ! apt-get install -y "$HERE"/debs/*.deb; then
+  echo "minty: WARNING Mint-Y theme not installed (offline?); MATE keeps its"
+  echo "minty: default theme. Rerun this script once online to apply it."
+fi
 
 echo "minty: applying desktop defaults"
 install -d /etc/dconf/profile /etc/dconf/db/local.d

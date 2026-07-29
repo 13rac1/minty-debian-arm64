@@ -1,9 +1,13 @@
 # Minty Debian arm64
 
 Turn a stock Debian 13 arm64 installer ISO into an unattended installer
-for a Mint-like MATE desktop. Every package comes from official Debian
-mirrors — no third-party repositories, no rebuilt packages, no Linux
-Mint branding shipped by this project.
+for a Mint-like MATE desktop with the Mint-Y theme. Almost everything
+comes from official Debian mirrors; the exceptions are the Mint-Y GTK
+theme and Mint-X icons (`mint-themes`, `mint-x-icons`) — arch:all GPL
+data Debian does not carry — which `build.sh` fetches from the Linux Mint
+package pool and bakes into the image. No third-party apt repository is
+added to the installed system, and none of Linux Mint's logos or
+artwork-branding are shipped.
 
 ## Workflow
 
@@ -13,13 +17,13 @@ Mint branding shipped by this project.
 3. `./build.sh debian-13.6.0-arm64-DVD-1.iso`
 
 Output: `minty-debian-arm64.iso` — boot it on any arm64 UEFI machine or
-VM and it installs Debian 13 with MATE, themed dark (the "DarkShiny"
-look: Adwaita-dark GTK, the Shiny Marco window theme, mate icons), the
-Mint-origin applications Debian itself packages (slick-greeter,
-timeshift, mintstick), and the SPICE/QEMU guest agents for running under
-UTM or QEMU (spice-vdagent for clipboard and dynamic resolution,
-spice-webdavd for file sharing, qemu-guest-agent for host-driven
-shutdown).
+VM and it installs Debian 13 with MATE, themed Mint-Y-Dark (green
+accent): the Mint-Y-Dark GTK theme, the adaptive Mint-Y Marco window
+borders, Mint-Y icons, and the Bibata cursor. Plus the Mint-origin
+applications Debian itself packages (slick-greeter, timeshift, mintstick)
+and the SPICE/QEMU guest agents for running under UTM or QEMU
+(spice-vdagent for clipboard and dynamic resolution, spice-webdavd for
+file sharing, qemu-guest-agent for host-driven shutdown).
 
 This is an installer image, not a live session — Debian publishes no
 arm64 live desktop images, so there is no try-before-install.
@@ -75,17 +79,20 @@ from the CD-ROM mount point after hardware detection rather than
 auto-loaded from the initramfs root — the early initramfs path runs
 before framebuffer init on QEMU ARM64, blanking the display. The
 preseed's `late_command` copies the payload into the installed system
-and runs `setup.sh`, which installs the package list and applies the
-desktop defaults (dconf system database, slick-greeter as the lightdm
-greeter, the DarkShiny theme selection). Every theme component ships in
-Debian — Adwaita-dark, the Shiny Marco theme, mate icons — so `build.sh`
-downloads nothing; it only repacks the ISO.
+and runs `setup.sh`, which installs the package list, installs the baked
+Mint-Y theme `.deb`s, and applies the desktop defaults (dconf system
+database, slick-greeter as the lightdm greeter, the Mint-Y-Dark theme
+selection). `build.sh` fetches the Mint-Y theme `.deb`s from the Linux
+Mint pool (arch:all, not in Debian) and bakes them into the image,
+caching them under `.cache/` between builds; everything else on the ISO
+passes through unchanged.
 
-Build dependencies: `xorriso`, `cpio`, `gzip`. Runs on any Linux or
-macOS host, any architecture (only the target ISO is arm64):
+Build dependencies: `xorriso`, `cpio`, `gzip`, and `curl` or `wget`
+(build.sh fetches the theme `.deb`s). Runs on any Linux or macOS host,
+any architecture (only the target ISO is arm64):
 
-- Debian/Ubuntu: `sudo apt install xorriso` (cpio and gzip are standard)
-- macOS: `brew install xorriso` (cpio and gzip are built in)
+- Debian/Ubuntu: `sudo apt install xorriso` (cpio, gzip, wget are standard)
+- macOS: `brew install xorriso` (curl, cpio, gzip are built in)
 
 On an Apple Silicon Mac the result can also be tested at native speed:
 UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
@@ -99,7 +106,6 @@ UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
 - `payload/minty/packages.txt` — the package list (MATE theming + Mint-origin apps)
 - `payload/minty/dconf/` — desktop defaults
 - `payload/minty/lightdm/` — greeter configuration
-- `payload/minty/themes/` — the DarkShiny metatheme
 
 ## Status
 
@@ -109,9 +115,10 @@ Full install runs are tested in QEMU; bare-metal reports welcome.
 ## Naming and trademarks
 
 "Minty" describes the flavor; this project is not Linux Mint and ships
-none of its branding. The Mint-origin applications it installs
-(slick-greeter, timeshift, mintstick) are redistributed by Debian under
-their upstream (GPL) licenses.
+none of its logos or artwork-branding. It does redistribute Mint's GPL
+theme data — `mint-themes` and `mint-x-icons` from the Linux Mint pool,
+plus `mint-y-icons` and the apps (slick-greeter, timeshift, mintstick)
+that Debian itself packages — all under their upstream GPL licenses.
 
 ## License
 

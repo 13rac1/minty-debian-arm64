@@ -1,8 +1,9 @@
-# System-wide MATE desktop defaults (the "DarkShiny" look); users can
-# override per session. gtk-theme is DarkShiny, a small theme baked into
-# the image (built-in Adwaita dark plus a fix for the invisible entry
-# caret; SEE themes/DarkShiny). The rest come from Debian: the Shiny Marco
-# theme and the mate cursor from mate-themes, mate icons from mate-icon-theme.
+# System-wide MATE desktop defaults (the Mint-Y-Dark green/dark look);
+# users can override per session. The GTK theme, the base Mint-Y metacity
+# theme, and the Mint-Y icons come from mint-themes/mint-y-icons; the
+# cursor from bibata-cursor-theme. The base Mint-Y metacity theme is
+# adaptive — it pulls wm_* colors (gtk:custom) from the active GTK theme —
+# so a single WM theme renders this variant's green/dark window borders.
 #
 # DANGER: the dconf paths differ from the gsettings schema ids — group
 # headers are the paths. org.mate.interface lives at .../desktop/interface;
@@ -10,19 +11,18 @@
 # header is silently ignored.
 
 [org/mate/desktop/interface]
-gtk-theme='DarkShiny'
-icon-theme='mate'
-gtk-color-scheme='tooltip_fg_color:#ffffff,tooltip_bg_color:#343434'
+gtk-theme='Mint-Y-Dark'
+icon-theme='Mint-Y'
 
 [org/mate/marco/general]
-theme='Shiny'
+theme='Mint-Y'
 
 [org/mate/desktop/peripherals/mouse]
-cursor-theme='mate'
+cursor-theme='Bibata-Modern-Classic'
 cursor-size=24
 
 # Fallback for GTK/GNOME apps that read the gnome schema (portals, GTK4).
 [org/gnome/desktop/interface]
-gtk-theme='DarkShiny'
-icon-theme='mate'
+gtk-theme='Mint-Y-Dark'
+icon-theme='Mint-Y'
 color-scheme='prefer-dark'
