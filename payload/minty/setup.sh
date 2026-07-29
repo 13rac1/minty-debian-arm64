@@ -46,12 +46,15 @@ echo "minty: enabling weekly fstrim"
 systemctl enable fstrim.timer 2>/dev/null || echo "minty: WARNING could not enable fstrim.timer"
 
 echo "minty: installing the DarkShiny theme"
-# DarkShiny is a meta-theme (references Adwaita-dark + Shiny + mate, all
-# installed above). Shipping index.theme makes it a selectable preset in
-# the MATE Appearance list; the dconf defaults below already apply its
-# components, so it shows up as the active selection.
-install -d /usr/share/themes/DarkShiny
-install -m 0644 "$HERE/themes/DarkShiny/index.theme" /usr/share/themes/DarkShiny/index.theme
+# DarkShiny is a complete theme: a metatheme (index.theme, so it is a
+# selectable/active preset in MATE Appearance) plus its own GTK CSS —
+# built-in Adwaita dark with the missing entry caret-color restored. Its
+# GTK2 rc just includes Adwaita-dark's, which must therefore be installed
+# (mate-themes/gnome-themes-extra-data are in packages.txt).
+install -d /usr/share/themes/DarkShiny/gtk-3.0 /usr/share/themes/DarkShiny/gtk-2.0
+install -m 0644 "$HERE/themes/DarkShiny/index.theme"     /usr/share/themes/DarkShiny/index.theme
+install -m 0644 "$HERE/themes/DarkShiny/gtk-3.0/gtk.css" /usr/share/themes/DarkShiny/gtk-3.0/gtk.css
+install -m 0644 "$HERE/themes/DarkShiny/gtk-2.0/gtkrc"   /usr/share/themes/DarkShiny/gtk-2.0/gtkrc
 
 echo "minty: applying desktop defaults"
 install -d /etc/dconf/profile /etc/dconf/db/local.d

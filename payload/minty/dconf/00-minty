@@ -1,8 +1,8 @@
 # System-wide MATE desktop defaults (the "DarkShiny" look); users can
-# override per session. Every component ships in Debian, so nothing is
-# baked into the image: Adwaita-dark from gnome-themes-extra-data, the
-# Shiny Marco theme and the mate cursor from mate-themes, mate icons from
-# mate-icon-theme.
+# override per session. gtk-theme is DarkShiny, a small theme baked into
+# the image (built-in Adwaita dark plus a fix for the invisible entry
+# caret; SEE themes/DarkShiny). The rest come from Debian: the Shiny Marco
+# theme and the mate cursor from mate-themes, mate icons from mate-icon-theme.
 #
 # DANGER: the dconf paths differ from the gsettings schema ids — group
 # headers are the paths. org.mate.interface lives at .../desktop/interface;
@@ -10,7 +10,7 @@
 # header is silently ignored.
 
 [org/mate/desktop/interface]
-gtk-theme='Adwaita-dark'
+gtk-theme='DarkShiny'
 icon-theme='mate'
 gtk-color-scheme='tooltip_fg_color:#ffffff,tooltip_bg_color:#343434'
 
@@ -23,6 +23,6 @@ cursor-size=24
 
 # Fallback for GTK/GNOME apps that read the gnome schema (portals, GTK4).
 [org/gnome/desktop/interface]
-gtk-theme='Adwaita-dark'
+gtk-theme='DarkShiny'
 icon-theme='mate'
 color-scheme='prefer-dark'

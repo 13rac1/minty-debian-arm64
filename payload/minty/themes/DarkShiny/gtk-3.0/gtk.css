@@ -1,0 +1,12 @@
+/* DarkShiny GTK3 = GTK's built-in Adwaita dark, plus a visible text caret.
+ *
+ * Built-in Adwaita-dark sets caret-color on .view/textview but never on
+ * `entry`, so the entry caret falls back to a dark default and renders
+ * invisibly on the dark entry background. SEE GNOME/gtk (gtk-3-24)
+ * gtk/theme/Adwaita/_common.scss: the `.view` block has
+ * `caret-color: $caret_color` but the `entry` block (~line 323) has none.
+ * We mirror the theme's own label workaround (`caret-color: currentColor`,
+ * commented there as "this shouldn't be needed"). */
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+
+entry, spinbutton { caret-color: currentColor; }

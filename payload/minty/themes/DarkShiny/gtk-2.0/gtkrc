@@ -1,0 +1,4 @@
+# DarkShiny reuses Adwaita-dark's GTK2 styling unchanged — the invisible
+# caret is a GTK3-only bug, so GTK2 apps just need to stay dark. Without
+# this, gtk-theme=DarkShiny would leave GTK2 apps on the default light theme.
+include "/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc"
