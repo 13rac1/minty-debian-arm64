@@ -6,3 +6,6 @@ timeshift
 mintstick
 fonts-ubuntu
 dconf-cli
+spice-vdagent
+spice-webdavd
+qemu-guest-agent
