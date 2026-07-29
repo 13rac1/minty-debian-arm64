@@ -45,6 +45,37 @@ fi
 echo "minty: enabling weekly fstrim"
 systemctl enable fstrim.timer 2>/dev/null || echo "minty: WARNING could not enable fstrim.timer"
 
+# UTM shared folder: auto-mount the "share" device and remap it to the first
+# user, read/write, at ~/Shared. QEMU shares via 9p (VirtFS), Apple
+# Virtualization via virtiofs; either way the raw share carries the host's
+# uid/gid, so a bindfs layer forces ownership to the first user (allow_other
+# lets that user reach the root-mounted fuse). nofail: with no shared folder
+# configured in UTM the mounts are skipped and boot is unaffected.
+virt=$(systemd-detect-virt --vm 2>/dev/null || true)
+user=$(getent passwd 1000 | cut -d: -f1)
+home=$(getent passwd 1000 | cut -d: -f6)
+case "$virt" in
+  qemu|kvm) raw="share /media/share 9p trans=virtio,version=9p2000.L,rw,_netdev,nofail 0 0" ;;
+  apple)    raw="share /media/share virtiofs rw,nofail 0 0" ;;
+  *)        raw="" ;;
+esac
+if [ -z "$raw" ] || [ -z "$user" ] || [ -z "$home" ]; then
+  echo "minty: skipping UTM shared folder (backend: ${virt:-none})"
+elif grep -qE '[[:space:]]/media/share[[:space:]]' /etc/fstab; then
+  echo "minty: UTM shared folder already in fstab"
+else
+  group=$(id -gn "$user" 2>/dev/null || echo "$user")
+  install -d -m 0755 /media/share
+  install -d -o "$user" -g "$group" -m 0755 "$home/Shared"
+  {
+    echo ""
+    echo "# UTM shared folder ($virt), remapped read/write to $user at ~/Shared"
+    echo "$raw"
+    echo "/media/share $home/Shared fuse.bindfs force-user=$user,force-group=$group,allow_other,x-systemd.requires=/media/share,_netdev,nofail 0 0"
+  } >> /etc/fstab
+  echo "minty: UTM shared folder ($virt) -> $home/Shared"
+fi
+
 echo "minty: installing the Mint-Y theme"
 # build.sh bakes mint-themes + mint-x-icons (Linux Mint pool, arch:all, not
 # in Debian) into debs/; the mint-y-icons dependency comes from Debian (in

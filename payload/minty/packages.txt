@@ -9,4 +9,5 @@ spice-vdagent
 spice-webdavd
 qemu-guest-agent
 gvfs-backends
+bindfs
 openssh-server

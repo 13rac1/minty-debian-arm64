@@ -23,7 +23,9 @@ borders, Mint-Y icons, and the Bibata cursor. Plus the Mint-origin
 applications Debian itself packages (slick-greeter, timeshift, mintstick)
 and the SPICE/QEMU guest agents for running under UTM or QEMU
 (spice-vdagent for clipboard and dynamic resolution, spice-webdavd for
-file sharing, qemu-guest-agent for host-driven shutdown).
+file sharing, qemu-guest-agent for host-driven shutdown). A UTM shared
+folder auto-mounts read/write for the first user at `~/Shared` — 9p under
+the QEMU backend, virtiofs under Apple Virtualization, detected at install.
 
 This is an installer image, not a live session — Debian publishes no
 arm64 live desktop images, so there is no try-before-install.
