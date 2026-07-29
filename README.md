@@ -57,8 +57,15 @@ CD/ISO drive in its settings, and start it again.
 ## 5. First login
 
 Select your user and enter your password. The desktop is dark Mint-Y MATE.
-A README on the desktop documents the shared folder, clipboard, and other
-details.
+A README on the desktop covers further details.
+
+## Mac integration
+
+Clipboard sharing and a shared folder are already configured in Minty —
+nothing needs setting up inside the VM. On the default (QEMU) backend, turn
+on clipboard sharing and/or select a shared directory in UTM's settings;
+copy/paste then works between the Mac and Minty, and the shared folder
+appears at `~/Shared`.
 
 ## Building from source · internals
 
