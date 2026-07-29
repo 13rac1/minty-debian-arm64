@@ -32,6 +32,16 @@ DL=$(command -v curl || command -v wget) || { echo "missing dependency: curl or 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
+# Refuse anything but a Debian 13 (trixie) ISO before doing any work — the
+# preseed's tasksel and the package list are trixie-specific, so a wrong
+# version would build a broken image. .disk/info is Debian's canonical
+# version string, e.g. "Debian GNU/Linux 13.6.0 _Trixie_ - Official arm64 …".
+xorriso -osirrox on -indev "$ISO" -extract /.disk/info "$WORK/diskinfo" 2>/dev/null
+grep -qE '^Debian GNU/Linux 13[. ]' "$WORK/diskinfo" 2>/dev/null || {
+  echo "not a Debian 13 ISO: $(cat "$WORK/diskinfo" 2>/dev/null || echo 'no .disk/info found')" >&2
+  exit 1
+}
+
 # The initramfs overlay carries only the payload tree; the preseed lives
 # on the ISO filesystem and is loaded via grub.cfg's file= parameter.
 # Placing preseed.cfg in the initramfs root triggers d-i's early preseed
