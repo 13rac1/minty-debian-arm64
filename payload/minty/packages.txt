@@ -8,3 +8,5 @@ dconf-cli
 spice-vdagent
 spice-webdavd
 qemu-guest-agent
+gvfs-backends
+openssh-server

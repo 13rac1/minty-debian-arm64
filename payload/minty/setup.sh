@@ -39,6 +39,12 @@ if [ "${#missing[@]}" -ne 0 ]; then
   exit 1
 fi
 
+# Weekly fstrim returns deleted-block space to the host — a qcow2/VM disk
+# only grows otherwise. enable (not --now) works in the install-time chroot;
+# the timer starts on first boot.
+echo "minty: enabling weekly fstrim"
+systemctl enable fstrim.timer 2>/dev/null || echo "minty: WARNING could not enable fstrim.timer"
+
 echo "minty: installing the DarkShiny theme"
 # DarkShiny is a meta-theme (references Adwaita-dark + Shiny + mate, all
 # installed above). Shipping index.theme makes it a selectable preset in
