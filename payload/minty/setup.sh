@@ -56,6 +56,12 @@ if ! apt-get install -y "$HERE"/debs/*.deb; then
   echo "minty: default theme. Rerun this script once online to apply it."
 fi
 
+echo "minty: installing the single bottom panel layout"
+# default-layout='minty' (dconf below) points mate-panel at this file; a
+# fresh user gets a single bottom panel on first run instead of two.
+install -d /usr/share/mate-panel/layouts
+install -m 0644 "$HERE/mate-panel/minty.layout" /usr/share/mate-panel/layouts/minty.layout
+
 echo "minty: applying desktop defaults"
 install -d /etc/dconf/profile /etc/dconf/db/local.d
 printf 'user-db:user\nsystem-db:local\n' > /etc/dconf/profile/user

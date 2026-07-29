@@ -21,6 +21,12 @@ theme='Mint-Y'
 cursor-theme='Bibata-Modern-Classic'
 cursor-size=24
 
+# Single bottom panel instead of the default two (top + bottom). Selects
+# the baked minty.layout; a fresh user's mate-panel instantiates it on
+# first run. SEE mate-panel/minty.layout.
+[org/mate/panel/general]
+default-layout='minty'
+
 # Fallback for GTK/GNOME apps that read the gnome schema (portals, GTK4).
 [org/gnome/desktop/interface]
 gtk-theme='Mint-Y-Dark'

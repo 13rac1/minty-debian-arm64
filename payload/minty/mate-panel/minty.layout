@@ -1,0 +1,46 @@
+# A single bottom panel (Mint-style), selected via
+# org.mate.panel default-layout='minty'. Based on mate-panel's
+# linuxmint.layout, but the menu is mate-menu (MateMenuApplet, Debian main)
+# instead of mintmenu (MintMenuApplet, not in Debian). The other applets
+# are standard mate-panel/wnck applets.
+[Toplevel bottom]
+expand=true
+orientation=bottom
+size=24
+
+[Object menu]
+object-type=applet
+applet-iid=MateMenuAppletFactory::MateMenuApplet
+toplevel-id=bottom
+position=0
+locked=true
+
+[Object show-desktop]
+object-type=applet
+applet-iid=WnckletFactory::ShowDesktopApplet
+toplevel-id=bottom
+position=1
+locked=true
+
+[Object window-list]
+object-type=applet
+applet-iid=WnckletFactory::WindowListApplet
+toplevel-id=bottom
+position=20
+locked=true
+
+[Object notification-area]
+object-type=applet
+applet-iid=NotificationAreaAppletFactory::NotificationArea
+toplevel-id=bottom
+position=10
+relative-to-edge=end
+locked=true
+
+[Object clock]
+object-type=applet
+applet-iid=ClockAppletFactory::ClockApplet
+toplevel-id=bottom
+position=0
+relative-to-edge=end
+locked=true

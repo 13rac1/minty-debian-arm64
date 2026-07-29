@@ -3,6 +3,7 @@ bibata-cursor-theme
 slick-greeter
 timeshift
 mintstick
+mate-menu
 dconf-cli
 spice-vdagent
 spice-webdavd
