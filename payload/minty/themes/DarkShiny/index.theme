@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=DarkShiny
+Type=X-GNOME-Metatheme
+Comment=
+
+[X-GNOME-Metatheme]
+GtkTheme=Adwaita-dark
+MetacityTheme=Shiny
+IconTheme=mate
+GtkColorScheme=tooltip_fg_color:#ffffff,tooltip_bg_color:#343434
+CursorTheme=mate
+CursorSize=24

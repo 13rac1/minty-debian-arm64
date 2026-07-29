@@ -12,6 +12,7 @@
 [org/mate/desktop/interface]
 gtk-theme='Adwaita-dark'
 icon-theme='mate'
+gtk-color-scheme='tooltip_fg_color:#ffffff,tooltip_bg_color:#343434'
 
 [org/mate/marco/general]
 theme='Shiny'

@@ -39,6 +39,14 @@ if [ "${#missing[@]}" -ne 0 ]; then
   exit 1
 fi
 
+echo "minty: installing the DarkShiny theme"
+# DarkShiny is a meta-theme (references Adwaita-dark + Shiny + mate, all
+# installed above). Shipping index.theme makes it a selectable preset in
+# the MATE Appearance list; the dconf defaults below already apply its
+# components, so it shows up as the active selection.
+install -d /usr/share/themes/DarkShiny
+install -m 0644 "$HERE/themes/DarkShiny/index.theme" /usr/share/themes/DarkShiny/index.theme
+
 echo "minty: applying desktop defaults"
 install -d /etc/dconf/profile /etc/dconf/db/local.d
 printf 'user-db:user\nsystem-db:local\n' > /etc/dconf/profile/user
