@@ -144,5 +144,18 @@ for iso_path in "${INITRDS[@]}"; do
   gzip -t < "$chk" 2>/dev/null || corrupt "$iso_path is corrupt in the output ISO"
 done
 
+# Write a SHA256SUMS next to the ISO for release verification — download
+# consumers check it with `sha256sum -c` (Linux) or `shasum -a 256 -c`
+# (macOS). The entry uses the bare filename so it verifies in the same dir.
+if command -v sha256sum >/dev/null; then SHA="sha256sum"
+elif command -v shasum >/dev/null; then SHA="shasum -a 256"
+else SHA=""; fi
+if [ -n "$SHA" ]; then
+  ( cd "$(dirname "$OUT")" && $SHA "$(basename "$OUT")" > SHA256SUMS )
+  echo "wrote $(dirname "$OUT")/SHA256SUMS"
+else
+  echo "note: no sha256sum/shasum found; skipped SHA256SUMS" >&2
+fi
+
 echo
 echo "wrote $OUT (preseed: $(basename "$PRESEED"); kernel + initrds verified intact)"
