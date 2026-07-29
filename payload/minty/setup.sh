@@ -49,14 +49,16 @@ systemctl enable fstrim.timer 2>/dev/null || echo "minty: WARNING could not enab
 # user, read/write, at ~/Shared. QEMU shares via 9p (VirtFS), Apple
 # Virtualization via virtiofs; either way the raw share carries the host's
 # uid/gid, so a bindfs layer forces ownership to the first user (allow_other
-# lets that user reach the root-mounted fuse). nofail: with no shared folder
-# configured in UTM the mounts are skipped and boot is unaffected.
+# lets that user reach the root-mounted fuse). x-gvfs-hide keeps the raw
+# /media/share mount out of the file manager, so only ~/Shared shows there.
+# nofail: with no shared folder configured in UTM the mounts are skipped and
+# boot is unaffected.
 virt=$(systemd-detect-virt --vm 2>/dev/null || true)
 user=$(getent passwd 1000 | cut -d: -f1)
 home=$(getent passwd 1000 | cut -d: -f6)
 case "$virt" in
-  qemu|kvm) raw="share /media/share 9p trans=virtio,version=9p2000.L,rw,_netdev,nofail 0 0" ;;
-  apple)    raw="share /media/share virtiofs rw,nofail 0 0" ;;
+  qemu|kvm) raw="share /media/share 9p trans=virtio,version=9p2000.L,rw,_netdev,nofail,x-gvfs-hide 0 0" ;;
+  apple)    raw="share /media/share virtiofs rw,nofail,x-gvfs-hide 0 0" ;;
   *)        raw="" ;;
 esac
 if [ -z "$raw" ] || [ -z "$user" ] || [ -z "$home" ]; then
