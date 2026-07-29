@@ -128,4 +128,15 @@ if [ -x /usr/sbin/slick-greeter ] || dpkg -s slick-greeter >/dev/null 2>&1; then
   install -m 0644 "$HERE/lightdm/slick-greeter.conf" /etc/lightdm/slick-greeter.conf
 fi
 
+# Drop a short README on the first user's desktop: what this system is, the
+# UTM shared-folder / clipboard notes, and a link to UTM's Linux guest docs.
+user=$(getent passwd 1000 | cut -d: -f1)
+home=$(getent passwd 1000 | cut -d: -f6)
+if [ -n "$user" ] && [ -n "$home" ]; then
+  group=$(id -gn "$user" 2>/dev/null || echo "$user")
+  install -d -o "$user" -g "$group" -m 0755 "$home/Desktop"
+  install -m 0644 -o "$user" -g "$group" "$HERE/desktop/README.md" "$home/Desktop/README.md"
+  echo "minty: placed a README on $user's desktop"
+fi
+
 echo "minty: done"
