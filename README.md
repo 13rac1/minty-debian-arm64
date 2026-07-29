@@ -14,9 +14,12 @@ Mint branding shipped by this project.
 
 Output: `minty-debian-arm64.iso` — boot it on any arm64 UEFI machine or
 VM and it installs Debian 13 with MATE, themed dark (the "DarkShiny"
-look: Adwaita-dark GTK, the Shiny Marco window theme, mate icons), plus
-the Mint-origin applications Debian itself packages: slick-greeter,
-timeshift, mintstick.
+look: Adwaita-dark GTK, the Shiny Marco window theme, mate icons), the
+Mint-origin applications Debian itself packages (slick-greeter,
+timeshift, mintstick), and the SPICE/QEMU guest agents for running under
+UTM or QEMU (spice-vdagent for clipboard and dynamic resolution,
+spice-webdavd for file sharing, qemu-guest-agent for host-driven
+shutdown).
 
 This is an installer image, not a live session — Debian publishes no
 arm64 live desktop images, so there is no try-before-install.
@@ -96,6 +99,7 @@ UTM or QEMU run arm64 guests under Hypervisor.framework, no emulation.
 - `payload/minty/packages.txt` — the package list (MATE theming + Mint-origin apps)
 - `payload/minty/dconf/` — desktop defaults
 - `payload/minty/lightdm/` — greeter configuration
+- `payload/minty/themes/` — the DarkShiny metatheme
 
 ## Status
 
