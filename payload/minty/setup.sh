@@ -57,17 +57,19 @@ if ! apt-get install -y "$HERE"/debs/*.deb; then
 fi
 
 # WORKAROUND: mate-control-center (through 1.29) detects Marco themes only
-# via metacity-theme-1.xml/-2.xml, never -3.xml, so Mint-Y — which ships only
-# metacity-theme-3.xml — triggers a false "window manager theme not installed"
-# warning and is missing from the Window Border list. Marco renders v3 fine.
-# Symlink a -2.xml name onto the real -3.xml so the GUI's existence check
-# finds it; Marco still loads -3.xml (tried first). SEE
-# docs/mate-control-center-metacity-theme-3.md.
-mY=/usr/share/themes/Mint-Y/metacity-1
-if [ -f "$mY/metacity-theme-3.xml" ] && [ ! -e "$mY/metacity-theme-2.xml" ]; then
-  ln -s metacity-theme-3.xml "$mY/metacity-theme-2.xml"
-  echo "minty: worked around mate-control-center metacity-theme-3 detection"
-fi
+# via metacity-theme-1.xml/-2.xml, never -3.xml, so any theme shipping only
+# metacity-theme-3.xml (mint-themes' Mint-Y and Mint-X) triggers a false
+# "window manager theme not installed" warning and is missing from the Window
+# Border list. Marco renders v3 fine. For each such theme, symlink a -2.xml
+# name onto the real -3.xml so the GUI's existence check finds it; Marco still
+# loads -3.xml (tried first). SEE docs/mate-control-center-metacity-theme-3.md.
+for m in /usr/share/themes/*/metacity-1; do
+  [ -f "$m/metacity-theme-3.xml" ] || continue
+  [ -e "$m/metacity-theme-2.xml" ] && continue
+  [ -e "$m/metacity-theme-1.xml" ] && continue
+  ln -s metacity-theme-3.xml "$m/metacity-theme-2.xml"
+  echo "minty: metacity-theme-3 workaround for $(basename "$(dirname "$m")")"
+done
 
 echo "minty: installing the single bottom panel layout"
 # default-layout='minty' (dconf below) points mate-panel at this file; a

@@ -100,11 +100,13 @@ GitHub mirror `mate-desktop/mate-control-center`).
 
 We cannot rebuild mate-control-center (no third-party packages), so we make
 the GUI's existence check succeed: after installing `mint-themes`,
-`setup.sh` symlinks a `metacity-theme-2.xml` name onto the real
-`metacity-theme-3.xml` inside `/usr/share/themes/Mint-Y/metacity-1/`.
+`setup.sh` loops over every `/usr/share/themes/*/metacity-1` that ships only
+`metacity-theme-3.xml` (in `mint-themes` that is `Mint-Y` **and** `Mint-X`)
+and symlinks a `metacity-theme-2.xml` name onto the real
+`metacity-theme-3.xml`.
 
 - The GUI's `g_file_query_exists("metacity-theme-2.xml")` now passes, so it
-  indexes `Mint-Y` (name from the directory), lists it in Window Border, and
+  indexes the theme (name from the directory), lists it in Window Border, and
   the "not installed" warning disappears.
 - Marco still loads `metacity-theme-3.xml` (it tries the highest version
   first), so rendering is unchanged.
