@@ -12,6 +12,12 @@ LOG=/var/log/minty-setup.log
 exec > >(tee -a "$LOG") 2>&1
 
 echo "minty: installing packages from the Debian archive"
+# The installer records the boot DVD in apt's sources; once the disc is
+# gone that entry has no Release file and fails `apt-get update`, which
+# would abort setup below. Comment it out so update runs against the
+# network mirror — the packages below are not on the DVD, so the mirror
+# is required regardless. Anchored match is idempotent on rerun.
+sed -i '/^deb cdrom:/s/^/#/' /etc/apt/sources.list 2>/dev/null || true
 if ! apt-get update; then
   echo "minty: FATAL apt-get update failed (no network mirror?); aborting." >&2
   exit 1
