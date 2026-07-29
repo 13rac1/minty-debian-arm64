@@ -56,6 +56,19 @@ if ! apt-get install -y "$HERE"/debs/*.deb; then
   echo "minty: default theme. Rerun this script once online to apply it."
 fi
 
+# WORKAROUND: mate-control-center (through 1.29) detects Marco themes only
+# via metacity-theme-1.xml/-2.xml, never -3.xml, so Mint-Y — which ships only
+# metacity-theme-3.xml — triggers a false "window manager theme not installed"
+# warning and is missing from the Window Border list. Marco renders v3 fine.
+# Symlink a -2.xml name onto the real -3.xml so the GUI's existence check
+# finds it; Marco still loads -3.xml (tried first). SEE
+# docs/mate-control-center-metacity-theme-3.md.
+mY=/usr/share/themes/Mint-Y/metacity-1
+if [ -f "$mY/metacity-theme-3.xml" ] && [ ! -e "$mY/metacity-theme-2.xml" ]; then
+  ln -s metacity-theme-3.xml "$mY/metacity-theme-2.xml"
+  echo "minty: worked around mate-control-center metacity-theme-3 detection"
+fi
+
 echo "minty: installing the single bottom panel layout"
 # default-layout='minty' (dconf below) points mate-panel at this file; a
 # fresh user gets a single bottom panel on first run instead of two.
