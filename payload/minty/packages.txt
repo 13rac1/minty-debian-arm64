@@ -4,7 +4,6 @@ mate-icon-theme
 slick-greeter
 timeshift
 mintstick
-fonts-ubuntu
 dconf-cli
 spice-vdagent
 spice-webdavd
