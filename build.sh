@@ -20,7 +20,7 @@ if [ "${1:-}" = "--auto" ]; then
 fi
 [ $# -ge 1 ] || usage
 ISO=$1
-OUT=${2:-minty-debian-arm64.iso}
+OUT=${2:-minty-$(basename "$ISO")}
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
 for dep in xorriso cpio gzip; do

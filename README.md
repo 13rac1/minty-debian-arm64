@@ -16,7 +16,9 @@ artwork-branding are shipped.
 2. `git clone https://github.com/13rac1/minty-debian-arm64`
 3. `./build.sh debian-13.6.0-arm64-DVD-1.iso`
 
-Output: `minty-debian-arm64.iso` — boot it on any arm64 UEFI machine or
+Output: `minty-` + the input ISO's name (e.g.
+`minty-debian-13.6.0-arm64-netinst.iso`; override with a second argument
+to `build.sh`) — boot it on any arm64 UEFI machine or
 VM and it installs Debian 13 with MATE, themed Mint-Y-Dark (green
 accent): the Mint-Y-Dark GTK theme, the adaptive Mint-Y Marco window
 borders, Mint-Y icons, and the Bibata cursor. Plus the Mint-origin
@@ -61,7 +63,7 @@ qemu-img create -f qcow2 disk.qcow2 16G
 qemu-system-aarch64 -M virt -cpu max -smp 4 -m 4096 \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/AAVMF/AAVMF_CODE.fd \
   -device virtio-gpu-pci -device qemu-xhci -device usb-kbd -device usb-tablet \
-  -drive file=minty-debian-arm64.iso,media=cdrom \
+  -drive file=minty-debian-13.6.0-arm64-netinst.iso,media=cdrom \
   -drive file=disk.qcow2,if=virtio \
   -netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
   -display gtk
