@@ -19,13 +19,14 @@ theme. This note summarizes how the system is set up.
 - **Shared folder → `~/Shared`.** Enable a shared directory in the VM
   settings — **VirtFS** on the QEMU backend, **VirtioFS** on Apple
   Virtualization — and leave the device name as `share`. It auto-mounts at
-  `~/Shared` (an empty `~/Shared` means nothing is shared yet). Where you can
-  **write** differs by backend:
-    - **QEMU:** `~/Shared` itself is read/write.
-    - **Apple Virtualization:** the top of `~/Shared` is owned by the host
-      and is read-only to you; writing happens inside a **subfolder you own**
-      — create a folder in the shared directory (from either side) and use
-      that. This is how virtiofs maps host ownership, not a bug.
+  `~/Shared` (an empty `~/Shared` means nothing is shared yet). The layout
+  differs by backend:
+    - **QEMU:** the shared folder's contents sit directly in `~/Shared`,
+      read/write.
+    - **Apple Virtualization:** virtiofs nests the share one level down, in a
+      subfolder named after the host folder you shared — e.g. a Mac folder
+      named `Shared` appears as `~/Shared/Shared`. Read and write happen in
+      that subfolder; `~/Shared` itself is just the container.
 - **Clipboard & display auto-resize.** On the QEMU backend, turn on
   clipboard sharing in UTM; the SPICE agent handles copy/paste and resizing
   the desktop to the window.
