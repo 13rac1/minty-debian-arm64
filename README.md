@@ -40,6 +40,9 @@ To optionally verify the download, also download `SHA256SUMS` and run
    `~/Shared` inside the VM.
 7. Name the VM and save.
 
+On a Retina Mac, open the VM's **Settings → Display** and enable **Retina
+Mode (HiDPI)** for a sharp, full-resolution display.
+
 ## 4. Install Minty
 
 Start the VM and select **Install**. Accept the defaults except:
