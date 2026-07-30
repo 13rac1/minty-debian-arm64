@@ -1,13 +1,14 @@
 # Minty - a Mint-flavored Debian Linux
 
 Minty is Debian 13 configured to look like [Linux Mint](https://www.linuxmint.com/)
-(the Mint-Y theme and a single taskbar), pre-packaged to run
-virtualized in UTM on Apple Silicon Macs or other ARM64 hosts.
+(the Mint-Y theme and a single taskbar), pre-configured with shared
+clipboard/folders to run virtualized in UTM on Apple Silicon Macs or
+other ARM64 hosts.
 
 ## Note
 
-This exists because there is not an official ARM64 Linux
-Mint release, updates cease when there is.
+This exists because there is not an official ARM64 Linux Mint release,
+updates cease when there is.
 
 ## MacOS requirements
 
