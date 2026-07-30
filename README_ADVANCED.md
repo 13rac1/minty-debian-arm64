@@ -6,14 +6,14 @@ works.
 
 ## What Minty is
 
-`build.sh` turns a stock Debian 13 arm64 installer ISO into an unattended
-installer for a Mint-like MATE desktop with the Mint-Y theme. Almost
-everything comes from official Debian mirrors; the only exceptions are the
-Mint-Y GTK theme and Mint-X icons (`mint-themes`, `mint-x-icons`) — arch:all
-GPL data Debian does not carry — which `build.sh` fetches from the Linux
-Mint package pool and bakes into the image. No third-party apt repository is
-added to the installed system, and none of Linux Mint's logos or
-artwork-branding are shipped.
+`build.sh` turns a stock Debian 13 arm64 installer ISO into an optionally
+unattended installer for a Mint-like MATE desktop with the Mint-Y theme.
+Almost everything comes from official Debian mirrors; the only exceptions
+are the Mint-Y GTK theme and Mint-X icons (`mint-themes`, `mint-x-icons`)
+— arch:all GPL data Debian does not carry — which `build.sh` fetches from
+the Linux Mint package pool and bakes into the image. No third-party apt
+repository is added to the installed system, and none of Linux Mint's logos
+or artwork-branding are shipped.
 
 The installed system is Debian 13 with MATE, themed Mint-Y-Dark (green
 accent): the Mint-Y-Dark GTK theme, the adaptive Mint-Y Marco window
@@ -29,7 +29,8 @@ live desktop images, so there is no try-before-install.
 ## Building
 
 1. Download a Debian 13 arm64 installer ISO — netinst or DVD-1:
-   <https://www.debian.org/distrib/> (e.g. `debian-13.6.0-arm64-netinst.iso`)
+   * https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/ - netinst
+   * https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/ - DVD
 2. `git clone https://github.com/13rac1/minty-debian-arm64`
 3. `./build.sh debian-13.6.0-arm64-netinst.iso`
 
@@ -45,7 +46,7 @@ arm64):
 - macOS: `brew install xorriso` (curl, cpio, gzip are built in)
 
 The released ISO is the **netinst**-based build (GitHub caps release assets
-at 2 GB; the DVD-1 build is larger). It requires internet during install.
+at 2 GB; the DVD-1 is too large.) It requires internet during install.
 
 ## Modes
 
