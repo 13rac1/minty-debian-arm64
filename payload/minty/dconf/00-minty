@@ -27,6 +27,12 @@ cursor-size=24
 [org/mate/panel/general]
 default-layout='minty'
 
+# Pluma (the text editor) colors its edit area from a GtkSourceView scheme,
+# not the GTK theme; Debian's default 'tango' is light, so under the dark
+# theme the current-line highlight renders light-on-light. Use a dark scheme.
+[org/mate/pluma]
+color-scheme='oblivion'
+
 # Fallback for GTK/GNOME apps that read the gnome schema (portals, GTK4).
 [org/gnome/desktop/interface]
 gtk-theme='Mint-Y-Dark'
