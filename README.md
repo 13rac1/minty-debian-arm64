@@ -5,6 +5,9 @@ Minty is Debian 13 configured to look like [Linux Mint](https://www.linuxmint.co
 clipboard/folders to run virtualized in UTM on Apple Silicon Macs or
 other ARM64 hosts.
 
+![Minty Debian 13 Screenshot](https://github.com/13rac1/minty-debian-arm64/blob/main/docs/minty-debian13.jpg?raw=true)
+
+
 ## Note
 
 This exists because there is not an official ARM64 Linux Mint release,
